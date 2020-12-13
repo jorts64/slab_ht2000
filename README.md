@@ -20,3 +20,5 @@ Full blogpost about reverse engineering this thing: http://globalblindspot.blogs
 
 Author: Tom Van Braeckel <tomvanbraeckel@gmail.com>
 
+![](Portable-Digital-CO2-Meter-CO2-Monitor-Detector.jpg)
+
