@@ -8,6 +8,17 @@
 
 **Testejat anb Ubuntu 20.04**
 
+## Canvi dels permissos a GNU/Linux
+ **Com a root:**
+* Copiar l'arxiu *rules.d/98-HT2000.rules* a */etc/udev/rules.d/98-HT2000.rules*
+* Fer al terminal 
+```
+udevadm control --reload-rules
+```
+* Tornar a endollar el sensor si estava connectat
+
+Aquest canvi també permet utilitzar el programari java d' [Eugene Schava](https://github.com/eschava/HT2000-java) que incorpora **MQTT**
+
 ## From original code at [github](https://github.com/tomvanbraeckel/slab_ht2000) 
 
 README
