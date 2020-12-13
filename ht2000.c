@@ -17,6 +17,19 @@
  * 
  */
 
+/*
+ * Fork by Jordi Orts
+ * http://github/jorts64
+ * From original Tom Van Braeckel code
+ * Changed time source, this gets time from computer
+ * Changed print format
+ * Code cleared
+*/
+
+
+
+
+
 /* Linux */
 #include <linux/types.h>
 #include <linux/input.h>
@@ -85,37 +98,6 @@ int main(int argc, char **argv)
 	memset(&info, 0x0, sizeof(info));
 	memset(buf, 0x0, sizeof(buf));
 
-	/* Get Raw Name */
-	/*
-	res = ioctl(fd, HIDIOCGRAWNAME(256), buf);
-	if (res < 0)
-		perror("HIDIOCGRAWNAME");
-	else
-		printf("Raw Name: %s\n", buf);
-	*/
-
-	/* Get Physical Location */
-	/*
-	res = ioctl(fd, HIDIOCGRAWPHYS(256), buf);
-	if (res < 0)
-		perror("HIDIOCGRAWPHYS");
-	else
-		printf("Raw Phys: %s\n", buf);
-	*/
-
-	/* Get Raw Info */
-	/*
-	res = ioctl(fd, HIDIOCGRAWINFO, &info);
-	if (res < 0) {
-		perror("HIDIOCGRAWINFO");
-	} else {
-		printf("Raw Info:\n");
-		printf("\tbustype: %d (%s)\n",
-			info.bustype, bus_str(info.bustype));
-		printf("\tvendor: 0x%04hx\n", info.vendor);
-		printf("\tproduct: 0x%04hx\n", info.product);
-	}
-	*/
 
 	/* Set Feature */
 	buf[0] = 0x5; /* Report Number */
@@ -126,8 +108,6 @@ int main(int argc, char **argv)
 	if (res < 0)
 		perror("HIDIOCSFEATURE");
 	else {
-		// Too much information...
-		// printf("ioctl HIDIOCGFEATURE returned: %d\n", res);
 	}
 
 	/* Get Feature */
@@ -136,47 +116,33 @@ int main(int argc, char **argv)
 	if (res < 0) {
 		perror("HIDIOCGFEATURE");
 	} else {
-		// Too much information...
-		//printf("ioctl HIDIOCGFEATURE returned: %d\n", res);
-		/*
-		printf("Report data (not containing the report number):\n\t");
-		for (i = 0; i < res; i++)
-			printf("%hhx ", buf[i]);
-		puts("\n");
-		*/
-		if (res >= 30) {
+	if (res >= 30) {
 			memcpy(epoch, buf+1, 4);
-			//for (i = 0; i < 4; i++) printf("%hhx ", epoch[i]); puts("\n");
 			unsigned int seconds = epoch[0] * 16777216 + epoch[1] * 65536 + epoch[2] * 256 + epoch[3];
-			//printf("seconds = %u\n", seconds);
 			seconds = seconds - 2004450700;
-			printf("%u, ", seconds);
-			//printf("seconds since epoch = %u\n", seconds);
-			time_t now = seconds;
-			char* c_time_string = ctime(&now);
-			//printf("Current time is %s", c_time_string);
-			struct tm * p = localtime(&now);
-			char s[1000];
-			//strftime(s, 1000, "%A, %B %d %Y", p);
-			strftime(s, 1000, "%d-%m-%Y %H:%M:%S", p);
+
+			time_t rawtime;
+			struct tm * timeinfo;
+			char s [1000];
+			time (&rawtime);
+			timeinfo = localtime (&rawtime);
+			strftime (s,1000,"%d-%m-%Y %H:%M:%S",timeinfo);
 			printf("%s, ", s);
 
 			memcpy(temp, buf+7, 2);
 			double temperature = temp[0] * 256 + temp[1];
 			temperature = temperature - 400;
 			temperature = temperature / 10;
-			//printf("temperature = %f\n", temperature);
-			printf("%f, ", temperature);
+			printf("%4.1f, ", temperature);
 
 			memcpy(rh, buf+9, 2);
 			double humidity = rh[0] * 256 + rh[1];
 			humidity = humidity / 10;
-			//printf("humidity = %f\n", humidity);
-			printf("%f, ", humidity);
+			printf("%4.1f, ", humidity);
 
 			memcpy(co2, buf+24, 2);
 			double carbon = co2[0] * 256 + co2[1];
-			printf("%f\n", carbon);
+			printf("%4.0f\n", carbon);
 		} else {
 			puts("ERROR: report number 5 is too small so not all data is there...\n");
 		}

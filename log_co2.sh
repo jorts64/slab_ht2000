@@ -6,7 +6,7 @@ interval=4
 watch -pbn$interval '
 
 	# Human interface device identified by OS, might be different number
-	device=/dev/hidraw4
+	device=/dev/hidraw5
 
 	logFileName=$(date +%Y-%m-%d).csv
 	if [ $logFileName!=$oldLogFileName ]
@@ -14,10 +14,10 @@ watch -pbn$interval '
 		if [ ! -f $logFileName ]
 		then
 			# First line of CSV file
-			echo "time, timeStamp, internalTime, T, RH, CO2" > $logFileName
+			echo "DD-MM-YYYY HH-MM-SS, T   , RH  , CO2" > $logFileName
 		fi
 		oldLogFileName=$logFileName
 	fi
 	comandOutput=$(./ht2000 $device) &&
-	echo $(date -Iseconds)", "$comandOutput | tee -a $logFileName
+	echo $comandOutput | tee -a $logFileName
 '
