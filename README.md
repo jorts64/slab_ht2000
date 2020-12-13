@@ -1,3 +1,15 @@
+# Enregistrament de dades del sensor de CO2 HT2000 amb GNU/Linux
+**Fork del codi original de Tom Van Braeckel**
+* Changed time source, this gets time from computer
+* Changed print format
+* Code cleared
+* Logs scripts changed
+* Rules for permissions at /etc/udev/rules
+
+**Testejat anb Ubuntu 20.04**
+
+## From original code at [github](https://github.com/tomvanbraeckel/slab_ht2000) 
+
 README
 ======
 
